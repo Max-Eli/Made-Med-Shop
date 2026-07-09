@@ -45,7 +45,7 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.6;font-weight:300}
+body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.6;font-weight:300;overflow-x:hidden}
 a{color:inherit}
 img{max-width:100%}
 
@@ -196,13 +196,32 @@ img{max-width:100%}
 
 /* --------------------------- responsive --------------------- */
 @media(max-width:1000px){ .grid{grid-template-columns:repeat(2,1fr)} }
-@media(max-width:820px){ .pdp{grid-template-columns:1fr;gap:26px} }
+@media(max-width:820px){
+  .pdp{grid-template-columns:1fr;gap:24px}
+  .pdp-media{max-width:460px}      /* don't let the square photo get huge on tablet */
+}
 @media(max-width:560px){
-  .shop{padding:32px 20px 40px}
-  .grid{grid-template-columns:1fr}
-  .cart-row{grid-template-columns:64px 1fr}
-  .cart-thumb{width:64px;height:52px}
-  .cart-ctrls{grid-column:1/-1;justify-content:space-between;margin-top:6px}
+  .shop{padding:28px 18px 40px}
+  .toolbar{margin-bottom:22px;gap:12px}
+  .grid{grid-template-columns:1fr;gap:16px}
+  .shop-head h1{font-size:clamp(30px,8vw,38px)}
+  .lede{font-size:15px}
+
+  /* product page: full-width, easy-to-tap actions instead of cramped wrapping */
+  .pdp-info h1{font-size:clamp(28px,7.5vw,36px)}
+  .pdp-price .now{font-size:30px}
+  .buy-block{flex-direction:column;align-items:stretch;gap:10px}
+  .buy-block .stepper{align-self:flex-start}
+  .buy-block .btn{width:100%;text-align:center;padding:16px 20px}
+
+  /* cart: stack controls, full-width checkout, readable subtotal row */
+  .cart-row{grid-template-columns:60px 1fr}
+  .cart-thumb{width:60px;height:50px}
+  .cart-ctrls{grid-column:1/-1;justify-content:space-between;margin-top:8px;gap:14px}
+  .cart-foot{align-items:stretch}
+  .cart-foot .subtotal{display:flex;justify-content:space-between;align-items:baseline;width:100%}
+  .cart-foot .btn{width:100%;text-align:center;padding:16px 20px}
+  .cart-note{text-align:left;max-width:none}
 }
 </style>
 </head>
@@ -450,7 +469,11 @@ window.addEventListener("hashchange", router);
        iframe grows/shrinks to fit and never shows its own scrollbar --- */
 function postHeight(){
   if(window.parent === window) return;                 // not embedded (standalone)
-  const px = Math.ceil(document.documentElement.getBoundingClientRect().height);
+  // measure real content height (grows AND shrinks between views)
+  const px = Math.ceil(Math.max(
+    document.body.getBoundingClientRect().height,
+    document.documentElement.getBoundingClientRect().height
+  ));
   window.parent.postMessage({ mmShopHeight: px }, "*"); // lock origin in production
 }
 window.addEventListener("load", postHeight);
