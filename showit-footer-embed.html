@@ -1,0 +1,57 @@
+<!--
+  ============================================================
+  MADE MEDICAL — SHOP EMBED  (paste into Show It → Settings →
+  Advanced/Custom Code → FOOTER. It loads on every page but only
+  does anything on the /shop page.)
+
+  BEFORE PASTING: replace  https://shop.made-med.com  (appears twice)
+  with the real URL where the shop is hosted.
+  ============================================================
+-->
+<script>
+(function () {
+  var SHOP_URL   = "https://shop.made-med.com";   // where the widget is hosted
+  var SHOP_PATH  = "/shop";                        // the Show It page slug it mounts on
+
+  // Only run on the shop page
+  var here = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (here !== SHOP_PATH) return;
+
+  function mount() {
+    if (document.getElementById("mm-shop-frame")) return;   // already mounted
+
+    var wrap = document.createElement("div");
+    wrap.id = "mm-shop-wrap";
+    wrap.style.cssText = "width:100%;margin:0 auto;";
+
+    var frame = document.createElement("iframe");
+    frame.id = "mm-shop-frame";
+    frame.src = SHOP_URL + "/";
+    frame.title = "Made Medical Shop";
+    frame.scrolling = "no";
+    frame.style.cssText =
+      "width:100%;border:0;display:block;overflow:hidden;min-height:900px;";
+    wrap.appendChild(frame);
+
+    // Where to drop it: a Show It element containing the text  MM-SHOP  (put a
+    // text box with exactly that on the Shop page), otherwise the page body.
+    var marker = [].slice.call(document.querySelectorAll("body *")).find(function (el) {
+      return el.children.length === 0 && el.textContent.trim() === "MM-SHOP";
+    });
+    if (marker) { marker.textContent = ""; (marker.parentNode || document.body).appendChild(wrap); }
+    else { document.body.appendChild(wrap); }
+
+    // Auto-resize the iframe to the widget's height
+    window.addEventListener("message", function (e) {
+      if (SHOP_URL.indexOf(e.origin) !== 0) return;         // only trust our host
+      if (e.data && e.data.mmShopHeight) {
+        frame.style.height = e.data.mmShopHeight + "px";
+      }
+    });
+  }
+
+  if (document.readyState === "loading")
+    document.addEventListener("DOMContentLoaded", mount);
+  else mount();
+})();
+</script>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Made Medical — Grand Opening Offers</title>
+
+<!-- Albert Sans = the site's real body font (Google). Playfair Display = temporary
+     stand-in for the custom "Clair d'Or" heading font until we license its files. -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+
+<!-- ==== WHEN WE GET THE LICENSED FONTS, drop the files in /fonts and uncomment.
+        No other change needed — "Clair dOr" is already first in the --display stack.
+<style>
+@font-face{ font-family:"Clair dOr"; src:url("/fonts/ClairDor.woff2") format("woff2");
+            font-weight:400 600; font-style:normal; font-display:swap; }
+@font-face{ font-family:"Clair dOr"; src:url("/fonts/ClairDor-Italic.woff2") format("woff2");
+            font-weight:400 600; font-style:italic; font-display:swap; }
+</style>
+==== -->
+
+<style>
+/* ============================================================
+   BRAND TOKENS  —  edit these to match made-med.com exactly.
+   ============================================================ */
+:root{
+  --bg:        #E2E2E4;   /* page background — matches made-med.com */
+  --surface:   #FAFAFB;   /* card / panel — near-white */
+  --ink:       #202228;   /* primary text (cool near-black) */
+  --ink-soft:  #4B4D54;   /* body paragraphs */
+  --muted:     #83858C;   /* secondary text */
+  --line:      #CDCDD2;   /* hairline borders */
+  --accent:    #A67C77;   /* muted clay-rose — PLACEHOLDER until real hex */
+  --accent-2:  #6E7580;   /* cool slate */
+
+  --display: "Clair dOr", "Playfair Display", Georgia, serif;
+  --body:    "Albert Sans", "Helvetica Neue", Arial, sans-serif;
+
+  --maxw: 1180px;
+  --radius: 4px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--body);color:var(--ink);background:var(--bg);line-height:1.6;font-weight:300}
+a{color:inherit}
+img{max-width:100%}
+
+/* The widget is a self-contained module — no site header/nav/footer.
+   The live made-med.com page wraps this, so it reads as one of their pages. */
+.shop{max-width:var(--maxw);margin:0 auto;padding:44px 28px 56px}
+
+/* --------------------------- toolbar ------------------------ */
+.toolbar{display:flex;align-items:center;gap:16px;margin-bottom:30px;min-height:38px}
+.back{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  text-decoration:none;display:inline-flex;gap:9px;align-items:center;transition:color .3s var(--ease)}
+.back:hover{color:var(--ink)}
+.back svg{width:15px;height:15px}
+.cart-btn{margin-left:auto;display:inline-flex;align-items:center;gap:10px;background:var(--surface);
+  border:1px solid var(--line);border-radius:100px;padding:10px 17px;cursor:pointer;font-family:var(--body);
+  font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);transition:border-color .3s var(--ease)}
+.cart-btn:hover{border-color:var(--ink)}
+.cart-btn svg{width:16px;height:16px}
+.cart-count{background:var(--accent);color:#fff;border-radius:100px;min-width:19px;height:19px;
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;padding:0 5px}
+.cart-count.zero{display:none}
+
+/* ------------------------- shop header ---------------------- */
+.shop-head{max-width:62ch}
+.eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--accent);
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;font-weight:500}
+.eyebrow::before{content:"";width:30px;height:1px;background:var(--accent)}
+.shop-head h1{font-family:var(--display);font-weight:500;font-size:clamp(34px,5vw,54px);
+  line-height:1.02;letter-spacing:-.01em}
+.lede{color:var(--muted);font-size:15.5px;margin-top:16px;max-width:56ch}
+.lede a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent);white-space:nowrap}
+.shop-bar{display:flex;align-items:baseline;margin:32px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.shop-bar .count{font-family:var(--display);font-size:20px;font-weight:500}
+
+/* --------------------------- grid --------------------------- */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;display:flex;flex-direction:column;text-decoration:none;color:inherit;
+  animation:rise .6s var(--ease) backwards;
+  transition:transform .5s var(--ease), box-shadow .5s var(--ease), border-color .5s var(--ease)}
+.card:hover{transform:translateY(-6px);box-shadow:0 24px 46px -30px rgba(32,34,40,.55);border-color:#bcbcc4}
+
+/* shared image placeholder (grid, pdp, cart) */
+.thumb{position:relative;overflow:hidden;background:linear-gradient(150deg,var(--t1),var(--t2))}
+.card .thumb{aspect-ratio:1/1}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:1;
+  transition:transform .8s var(--ease)}
+.card:hover .thumb img{transform:scale(1.05)}
+.thumb::after{content:"";position:absolute;inset:0;z-index:2;
+  background:linear-gradient(180deg,rgba(28,30,36,.10),transparent 34%,transparent 66%,rgba(28,30,36,.28));mix-blend-mode:multiply}
+.thumb .glyph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.9);transition:transform .8s var(--ease)}
+.card:hover .thumb .glyph{transform:scale(1.08)}
+.thumb .kicker{position:absolute;left:15px;bottom:13px;z-index:3;color:rgba(255,255,255,.96);
+  font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.badge{position:absolute;top:13px;left:15px;z-index:3;background:var(--surface);color:var(--accent);
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:6px 10px;
+  border-radius:100px;border:1px solid var(--line);font-weight:500}
+.card-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
+.card-body h3{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.12}
+.card-body p{color:var(--muted);font-size:13px;margin-top:8px;flex:1;line-height:1.55}
+.price-row{display:flex;align-items:flex-end;justify-content:space-between;
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--line);gap:10px}
+.price{font-family:var(--display);font-size:25px;font-weight:600;line-height:1}
+.price s{display:block;font-family:var(--body);font-size:12.5px;color:var(--muted);
+  margin-bottom:3px;font-weight:300;text-decoration-thickness:1px}
+
+/* --------------------------- buttons ------------------------ */
+.buy{font-family:var(--body);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--ink);color:var(--surface);border:none;cursor:pointer;font-weight:500;
+  padding:12px 18px;border-radius:100px;position:relative;overflow:hidden;transition:background .4s var(--ease);flex:none}
+.buy:hover{background:var(--accent)}
+.btn{font-family:var(--body);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+  padding:15px 28px;border-radius:100px;cursor:pointer;border:1px solid transparent;transition:all .35s var(--ease)}
+.btn.primary{background:var(--ink);color:var(--surface)}
+.btn.primary:hover{background:var(--accent)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--ink)}
+.added{background:var(--accent-2)!important}
+
+/* --------------------------- stepper ------------------------ */
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:100px;background:var(--surface)}
+.stepper button{width:40px;height:44px;border:none;background:none;cursor:pointer;font-size:17px;color:var(--ink);line-height:1}
+.stepper button:hover{color:var(--accent)}
+.stepper .qty{min-width:26px;text-align:center;font-size:14px;font-weight:400}
+
+/* ----------------------- product detail --------------------- */
+.pdp{display:grid;grid-template-columns:1.02fr 1fr;gap:48px;align-items:start}
+.pdp-media .thumb{aspect-ratio:1/1;border-radius:var(--radius);border:1px solid var(--line)}
+.pdp-media .thumb .glyph svg{width:66px;height:66px}
+.pdp-info .eyebrow{margin-bottom:12px}
+.pdp-info h1{font-family:var(--display);font-weight:500;font-size:clamp(30px,4.4vw,46px);line-height:1.03}
+.pdp-price{display:flex;align-items:baseline;gap:14px;margin:18px 0 22px;flex-wrap:wrap}
+.pdp-price .now{font-family:var(--display);font-size:34px;font-weight:600}
+.pdp-price s{color:var(--muted);font-size:18px;text-decoration-thickness:1px}
+.pdp-price .save{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  border:1px solid var(--line);padding:5px 11px;border-radius:100px;align-self:center}
+.pdp-lede{color:var(--ink-soft);font-size:15.5px;line-height:1.65;max-width:48ch}
+.buy-block{display:flex;align-items:center;gap:12px;margin:26px 0 16px;flex-wrap:wrap}
+.callnote{color:var(--muted);font-size:13.5px}
+.callnote a{color:var(--ink);border-bottom:1px solid var(--accent);text-decoration:none;white-space:nowrap}
+.pdp-more{margin-top:54px;padding-top:38px;border-top:1px solid var(--line);max-width:70ch}
+.pdp-more h2{font-family:var(--display);font-weight:500;font-size:26px;margin-bottom:14px}
+.pdp-more p{color:var(--ink-soft);font-size:15px;line-height:1.75}
+.fineprint{margin-top:18px;font-size:13px;color:var(--muted)}
+
+/* --------------------------- faq ---------------------------- */
+.pdp-faq{margin-top:46px;max-width:70ch}
+.pdp-faq h2{font-family:var(--display);font-weight:500;font-size:26px;margin-bottom:6px}
+.faq{border-top:1px solid var(--line)}
+.faq:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 2px;font-size:15.5px;
+  display:flex;justify-content:space-between;align-items:center;gap:18px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:21px;font-weight:300;color:var(--muted);
+  transition:transform .3s var(--ease);line-height:1}
+.faq[open] summary::after{transform:rotate(45deg);color:var(--accent)}
+.faq summary:hover{color:var(--accent)}
+.faq p{padding:0 2px 20px;color:var(--ink-soft);font-size:14.5px;line-height:1.7;max-width:62ch}
+
+/* ----------------------------- cart ------------------------- */
+.cart{max-width:820px}
+.cart h1{font-family:var(--display);font-weight:500;font-size:clamp(28px,4vw,40px)}
+.cart-sub{color:var(--muted);font-size:14px;margin:6px 0 24px}
+.cart-row{display:grid;grid-template-columns:84px 1fr auto;gap:18px;align-items:center;
+  padding:18px 0;border-top:1px solid var(--line)}
+.cart-thumb{width:84px;height:64px;border-radius:var(--radius);display:block;flex:none}
+.cart-thumb .glyph svg{width:26px;height:26px}
+.cart-meta a{text-decoration:none}
+.cart-meta h4{font-family:var(--display);font-weight:500;font-size:18px}
+.cart-meta .cat{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cart-ctrls{display:flex;align-items:center;gap:22px}
+.line-price{font-family:var(--display);font-size:18px;font-weight:600;min-width:66px;text-align:right}
+.remove{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
+.remove:hover{color:var(--ink)}
+.cart-foot{margin-top:28px;border-top:1px solid var(--ink);padding-top:24px;
+  display:flex;flex-direction:column;align-items:flex-end;gap:16px}
+.subtotal{font-family:var(--display);font-size:24px;font-weight:600}
+.subtotal span{color:var(--muted);font-family:var(--body);font-size:13px;font-weight:300;margin-right:14px}
+.cart-note{color:var(--muted);font-size:12.5px;max-width:38ch;text-align:right}
+.empty{padding:64px 0;text-align:center;color:var(--muted)}
+.empty p{margin-bottom:20px;font-size:15px}
+
+/* --------------------------- motion ------------------------- */
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.reveal{animation:rise .7s var(--ease) both}
+
+/* --------------------------- responsive --------------------- */
+@media(max-width:1000px){ .grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:820px){ .pdp{grid-template-columns:1fr;gap:26px} }
+@media(max-width:560px){
+  .shop{padding:32px 20px 40px}
+  .grid{grid-template-columns:1fr}
+  .cart-row{grid-template-columns:64px 1fr}
+  .cart-thumb{width:64px;height:52px}
+  .cart-ctrls{grid-column:1/-1;justify-content:space-between;margin-top:6px}
+}
+</style>
+</head>
+<body>
+
+<main class="shop">
+  <div class="toolbar">
+    <div id="tbLeft"></div>
+    <button class="cart-btn" onclick="location.hash='#/cart'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 7h13l-1.2 9.5a2 2 0 0 1-2 1.7H9.2a2 2 0 0 1-2-1.7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>
+      </svg>
+      Cart <span class="cart-count zero" id="cartCount">0</span>
+    </button>
+  </div>
+  <div id="app"><!-- views render here --></div>
+</main>
+
+<script>
+/* ============================================================
+   PRODUCT DATA — mirrors the config file the live widget reads.
+   `--t1/--t2` are placeholder image tints (swap for real photos
+   via an `image` field later). Copy is intentionally plain; the
+   clinic should review the medical wording.
+   ============================================================ */
+const products = [
+  {
+    id:"co2-eye", name:"CO₂ Eye Rejuvenation", kicker:"Laser · Skin", glyph:"eye",
+    price:299, was:899, badge:"Save 67%", image:"images/co2-eye.png", t1:"#a9b3bd", t2:"#6d7681",
+    blurb:"Laser resurfacing for the skin around the eyes. Softens fine lines and helps with texture and dark circles.",
+    overview:"The skin around the eyes is thin, so it tends to show age before the rest of the face. A fractional CO₂ laser resurfaces that area to soften fine lines and improve crepey texture. We numb the skin first, and you'll have a few days of redness and light flaking while it heals.",
+    facts:[["Area","Around the eyes"],["Appointment","About 45 min"],["Downtime","3–5 days"],["Results","Build over 2–4 weeks"]],
+    note:"Not suitable during pregnancy or with an active skin infection in the area. We go over your history at the visit.",
+    faqs:[
+      ["Does it hurt?","We numb the area first, so most people feel heat and a bit of prickling rather than real pain."],
+      ["How long until I look normal again?","Plan for about 3 to 5 days of redness and light flaking. A lot of people just take a long weekend."],
+      ["How many treatments do I need?","You'll notice a change after one. Some people book a short series if they want to soften more texture."],
+      ["When can I wear makeup again?","Once the skin has closed back up, usually after the flaking settles. We'll tell you when you're good to go."]
+    ]
+  },
+  {
+    id:"lip-filler", name:"Lip Filler", kicker:"Injectables", glyph:"drop",
+    price:399, was:599, badge:"Save 33%", image:"images/lip-filler.png", t1:"#c99aa0", t2:"#8f5f66",
+    blurb:"One syringe of hyaluronic acid filler to add volume and shape to your lips.",
+    overview:"One syringe of hyaluronic acid filler, placed to add volume or reshape the lips. We can keep it natural or go fuller depending on what you're after. You'll see a difference right away, with some swelling that settles over the next few days.",
+    facts:[["Product","HA filler · 1 syringe"],["Appointment","About 30 min"],["Downtime","Minor swelling"],["Results","6–12 months"]],
+    note:"Numbing is included. Skip alcohol and blood thinners for a couple of days beforehand to reduce bruising.",
+    faqs:[
+      ["Will my lips look overdone?","Only if that's what you want. We can keep it subtle. Tell us the look you're going for and we'll match it."],
+      ["Does it hurt?","There's numbing in the filler and we can add more, so it stays pretty comfortable. Most people say it feels like pinching."],
+      ["How long does it last?","Usually 6 to 12 months. It fades slowly, so you decide when you want a top up."],
+      ["How much swelling should I expect?","Some swelling the first day or two is normal, especially in the morning. It settles on its own."]
+    ]
+  },
+  {
+    id:"laser-hair-full", name:"Full Body Laser Hair Removal", kicker:"Laser", glyph:"rays",
+    price:249, was:379, badge:"Save 34%", image:"images/laser-hair-full.png", t1:"#b4acba", t2:"#776e80",
+    blurb:"A full-body laser session to reduce hair growth from head to toe.",
+    overview:"A full-body laser session covering the areas you choose. The laser targets pigment in the hair follicle to slow regrowth. Since hair grows in cycles, most people book a series of sessions to get the fullest result.",
+    facts:[["Area","Full body"],["Appointment","60–90 min"],["Downtime","None"],["Best result","Over a series"]],
+    note:"Stay out of the sun and skip waxing or plucking before your session. Shaving is fine.",
+    faqs:[
+      ["How many sessions will I need?","Most people need several. Hair grows in cycles and the laser only catches what's actively growing, so we space the sessions out. We'll give you a realistic number at your visit."],
+      ["Is it permanent?","It's more of a big reduction than a total wipeout. Most people keep the results with the odd touch up down the line."],
+      ["Does it work with my hair color?","It works best on hair that still has pigment. Very light or gray hair doesn't respond as well. We can check for you before we start."],
+      ["How should I prep?","Shave the areas the day before and stay out of the sun. Don't wax or pluck first, since the laser needs the root to target."]
+    ]
+  },
+  {
+    id:"prf-ezgel", name:"PRF EZ-Gel", kicker:"Regenerative", glyph:"leaf",
+    price:549, was:749, badge:"Save 27%", image:"images/prf-ezgel.png", t1:"#a7b39a", t2:"#6e7563",
+    blurb:"A natural filler made from your own blood. Adds volume and supports collagen over time.",
+    overview:"We take a small blood draw, spin it down, and turn it into a gel. Because it's made from your own blood, there's nothing synthetic involved. It's used to add volume and support collagen in areas like under the eyes and the cheeks.",
+    facts:[["Source","Your own blood"],["Appointment","About 45 min"],["Downtime","Possible bruising"],["Results","Build gradually"]],
+    note:"Slight bruising at the injection sites is normal. We'll walk you through aftercare before you leave.",
+    faqs:[
+      ["How is this different from regular filler?","It's made from your own blood instead of a synthetic product, so nothing foreign goes in."],
+      ["Does the blood draw hurt?","It's the same as a regular blood test, just a small draw from your arm."],
+      ["When will I see results?","It builds gradually as your body responds, so give it a few weeks rather than expecting an instant change."],
+      ["Will I bruise?","A little bruising at the injection spots can happen. It usually clears up within a few days."]
+    ]
+  },
+];
+
+const glyphs = {
+  drop:'<path d="M12 3 C7 10 6 13 6 15 a6 6 0 0 0 12 0 c0-2-1-5-6-12 Z" />',
+  leaf:'<path d="M5 19 C5 10 12 5 19 5 C19 14 12 19 5 19 Z M9 15 C11 12 14 10 17 9" />',
+  eye:'<path d="M2 12 C5 6.5 8.5 5 12 5 C15.5 5 19 6.5 22 12 C19 17.5 15.5 19 12 19 C8.5 19 5 17.5 2 12 Z" /><circle cx="12" cy="12" r="3.1" />',
+  rays:'<circle cx="12" cy="12" r="3" /><path d="M12 2v3 M12 19v3 M2 12h3 M19 12h3 M5.2 5.2l2 2 M16.8 16.8l2 2 M18.8 5.2l-2 2 M7.2 16.8l-2 2" />',
+};
+const PHONE = "917-905-9165";
+const money = n => "$" + n.toLocaleString("en-US");
+const findP = id => products.find(p => p.id === id);
+const svg = (g, size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">${glyphs[g]||glyphs.drop}</svg>`;
+const media = (p, size) => p.image
+  ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.remove()">`
+  : `<div class="glyph">${svg(p.glyph,size)}</div>`;
+const thumb = (p, size) => `<div class="thumb" style="--t1:${p.t1};--t2:${p.t2}">${media(p,size)}</div>`;
+
+/* ------------------------- cart state ----------------------- */
+let cart = load();
+function load(){ try{ return JSON.parse(localStorage.getItem("mm_cart")) || {}; }catch(_){ return {}; } }
+function save(){ try{ localStorage.setItem("mm_cart", JSON.stringify(cart)); }catch(_){} }
+const cartCount = () => Object.values(cart).reduce((a,b)=>a+b,0);
+const cartItems = () => Object.entries(cart).map(([id,qty])=>({p:findP(id),qty})).filter(x=>x.p);
+const subtotal = () => cartItems().reduce((a,{p,qty})=>a+p.price*qty,0);
+function updateCount(){ const el=document.getElementById("cartCount"); const n=cartCount();
+  el.textContent=n; el.classList.toggle("zero", n===0); }
+
+/* --------------------------- views -------------------------- */
+const app = () => document.getElementById("app");
+const tbLeft = () => document.getElementById("tbLeft");
+const backLink = (label,href="#/") => `<a class="back" href="${href}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>${label}</a>`;
+
+function renderShop(){
+  tbLeft().innerHTML = "";
+  app().innerHTML = `
+    <header class="shop-head reveal">
+      <div class="eyebrow">Grand Opening · Now Open in Midtown Manhattan</div>
+      <h1>Grand Opening Offers</h1>
+      <p class="lede">Pay online to claim your offer, then call <a href="tel:1${PHONE.replace(/-/g,'')}">${PHONE}</a>
+        to book your visit. These prices are only good while our first appointments last.</p>
+    </header>
+    <div class="shop-bar reveal" style="animation-delay:.06s"><span class="count">${products.length} offers</span></div>
+    <section class="grid">
+      ${products.map((p,i)=>`
+        <a class="card" href="#/product/${p.id}" style="animation-delay:${i*60}ms">
+          <div class="thumb" style="--t1:${p.t1};--t2:${p.t2}">
+            <div class="badge">${p.badge}</div>
+            ${media(p,42)}
+            <div class="kicker">${p.kicker}</div>
+          </div>
+          <div class="card-body">
+            <h3>${p.name}</h3>
+            <p>${p.blurb}</p>
+            <div class="price-row">
+              <div class="price">${p.was?`<s>${money(p.was)}</s>`:""}${money(p.price)}</div>
+              <button class="buy" data-add="${p.id}"><span>Add</span></button>
+            </div>
+          </div>
+        </a>`).join("")}
+    </section>`;
+}
+
+function renderProduct(id){
+  const p = findP(id);
+  if(!p){ location.hash="#/"; return; }
+  tbLeft().innerHTML = backLink("All offers");
+  app().innerHTML = `
+    <article class="pdp reveal">
+      <div class="pdp-media">${thumb(p,66)}</div>
+      <div class="pdp-info">
+        <div class="eyebrow">${p.kicker}</div>
+        <h1>${p.name}</h1>
+        <div class="pdp-price">
+          ${p.was?`<s>${money(p.was)}</s>`:""}
+          <span class="now">${money(p.price)}</span>
+          <span class="save">${p.badge}</span>
+        </div>
+        <p class="pdp-lede">${p.blurb}</p>
+        <div class="buy-block">
+          <div class="stepper"><button data-step="-1">−</button><span class="qty">1</span><button data-step="1">+</button></div>
+          <button class="btn primary" data-add="${p.id}">Add to cart</button>
+          <button class="btn ghost" data-buy="${p.id}">Buy now</button>
+        </div>
+        <p class="callnote">Rather book first? Call <a href="tel:1${PHONE.replace(/-/g,'')}">${PHONE}</a>.</p>
+      </div>
+    </article>
+    <section class="pdp-more">
+      <h2>About this treatment</h2>
+      <p>${p.overview}</p>
+      <p class="fineprint">${p.note}</p>
+    </section>
+    ${p.faqs && p.faqs.length ? `
+    <section class="pdp-faq">
+      <h2>Common questions</h2>
+      ${p.faqs.map(([q,a])=>`<details class="faq"><summary>${q}</summary><p>${a}</p></details>`).join("")}
+    </section>` : ""}`;
+}
+
+function renderCart(){
+  tbLeft().innerHTML = backLink("Continue shopping");
+  const items = cartItems();
+  if(!items.length){
+    app().innerHTML = `<div class="cart"><h1>Your cart</h1>
+      <div class="empty"><p>Your cart is empty.</p>
+      <a class="btn ghost" href="#/">Browse the offers</a></div></div>`;
+    return;
+  }
+  app().innerHTML = `
+    <div class="cart reveal">
+      <h1>Your cart</h1>
+      <p class="cart-sub">Pay now to claim your price, then call ${PHONE} to book.</p>
+      ${items.map(({p,qty})=>`
+        <div class="cart-row">
+          <a class="cart-thumb thumb" href="#/product/${p.id}" style="--t1:${p.t1};--t2:${p.t2}">${media(p,26)}</a>
+          <div class="cart-meta"><a href="#/product/${p.id}"><h4>${p.name}</h4></a><span class="cat">${p.kicker}</span></div>
+          <div class="cart-ctrls">
+            <div class="stepper" data-id="${p.id}"><button data-step="-1">−</button><span class="qty">${qty}</span><button data-step="1">+</button></div>
+            <div class="line-price">${money(p.price*qty)}</div>
+            <button class="remove" data-remove="${p.id}">Remove</button>
+          </div>
+        </div>`).join("")}
+      <div class="cart-foot">
+        <div class="subtotal"><span>Subtotal</span>${money(subtotal())}</div>
+        <button class="btn primary" data-checkout>Checkout</button>
+        <p class="cart-note">You'll pay securely on the next step. Book your appointment by phone once payment clears.</p>
+      </div>
+    </div>`;
+}
+
+function renderSuccess(){
+  tbLeft().innerHTML = backLink("Back to shop");
+  cart = {}; save(); updateCount();          // order placed — empty the cart
+  app().innerHTML = `
+    <div class="cart reveal">
+      <h1>Thank you</h1>
+      <p class="cart-sub">Your payment went through and a receipt is on its way to your email.</p>
+      <p style="max-width:54ch;color:var(--ink-soft);line-height:1.75">
+        To book your appointment, give us a call at
+        <a href="tel:1${PHONE.replace(/-/g,'')}" style="color:var(--ink);border-bottom:1px solid var(--accent);text-decoration:none">${PHONE}</a>.
+        Bring the receipt to your visit and we'll take it from there.
+      </p>
+      <p style="margin-top:26px"><a class="btn ghost" href="#/">Back to the offers</a></p>
+    </div>`;
+}
+
+/* --------------------------- router ------------------------- */
+function router(){
+  const h = location.hash || "#/";
+  const m = h.match(/^#\/product\/(.+)$/);
+  if(h.indexOf("#/success") === 0) renderSuccess();
+  else if(h === "#/cart") renderCart();
+  else if(m) renderProduct(decodeURIComponent(m[1]));
+  else renderShop();
+  updateCount();
+  try{ window.scrollTo({top:0}); }catch(_){}
+  postHeight();
+}
+window.addEventListener("hashchange", router);
+
+/* --- embed auto-resize: tell the parent Show It page how tall we are, so the
+       iframe grows/shrinks to fit and never shows its own scrollbar --- */
+function postHeight(){
+  if(window.parent === window) return;                 // not embedded (standalone)
+  const px = Math.ceil(document.documentElement.getBoundingClientRect().height);
+  window.parent.postMessage({ mmShopHeight: px }, "*"); // lock origin in production
+}
+window.addEventListener("load", postHeight);
+if(window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+/* ------------------------ interactions ---------------------- */
+function qtyNear(btn){
+  const s = btn.closest(".buy-block")?.querySelector(".qty");
+  return s ? Math.max(1, parseInt(s.textContent)||1) : 1;
+}
+function flash(btn){
+  const t = btn.querySelector("span") || btn;
+  const original = t.textContent;
+  t.textContent = "Added ✓"; btn.classList.add("added");
+  setTimeout(()=>{ t.textContent = original; btn.classList.remove("added"); }, 1100);
+}
+function addToCart(id, qty){ cart[id] = (cart[id]||0) + qty; save(); updateCount(); }
+
+document.addEventListener("click", async (e)=>{
+  const step = e.target.closest("[data-step]");
+  const add  = e.target.closest("[data-add]");
+  const buy  = e.target.closest("[data-buy]");
+  const rm   = e.target.closest("[data-remove]");
+  const co   = e.target.closest("[data-checkout]");
+
+  if(step){
+    e.preventDefault();
+    const st = step.closest(".stepper");
+    const qEl = st.querySelector(".qty");
+    let q = (parseInt(qEl.textContent)||1) + parseInt(step.dataset.step);
+    if(st.dataset.id){                       // cart stepper — mutate + re-render
+      if(q <= 0) delete cart[st.dataset.id]; else cart[st.dataset.id] = q;
+      save(); renderCart(); updateCount();
+    } else {                                 // pdp stepper — local only
+      qEl.textContent = Math.max(1, q);
+    }
+    return;
+  }
+  if(add){ e.preventDefault(); addToCart(add.dataset.add, qtyNear(add)); flash(add); return; }
+  if(buy){ e.preventDefault(); addToCart(buy.dataset.buy, qtyNear(buy)); location.hash = "#/cart"; return; }
+  if(rm){ e.preventDefault(); delete cart[rm.dataset.remove]; save(); renderCart(); updateCount(); return; }
+  if(co){
+    e.preventDefault();
+    const items = cartItems().map(({p,qty})=>({ id:p.id, qty }));
+    if(!items.length) return;
+    const label = co.textContent;
+    co.disabled = true; co.textContent = "Starting checkout…";
+    try{
+      const r = await fetch("/api/create-checkout-session", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ items })
+      });
+      const data = await r.json().catch(()=>({}));
+      if(!r.ok || !data.url) throw new Error(data.error || ("HTTP " + r.status));
+      // Break out of the embed iframe so Stripe (which blocks iframing) loads at top level.
+      (window.top || window).location.href = data.url;
+    }catch(err){
+      alert("Sorry, we couldn't start checkout.\n\n" + err.message);
+      co.disabled = false; co.textContent = label;
+    }
+    return;
+  }
+});
+
+router();  // initial paint
+</script>
+</body>
+</html>
