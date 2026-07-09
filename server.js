@@ -16,9 +16,9 @@ app.use(express.json());
 // same route the frontend calls
 app.post("/api/create-checkout-session", (req, res) => checkout(req, res));
 
-// static files: shop.html, images/, etc.
-app.use(express.static(__dirname));
-app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "shop.html")));
+// static files served from /public (same as Vercel): shop.html, images/, etc.
+app.use(express.static(path.join(__dirname, "public")));
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "public", "shop.html")));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
