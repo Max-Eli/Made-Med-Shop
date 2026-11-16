@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Made Medical — Grand Opening Offers</title>
+<title>Made Medical — Black Friday Offers</title>
 
 <!-- Albert Sans = the site's real body font (Google). Playfair Display = temporary
      stand-in for the custom "Clair d'Or" heading font until we license its files. -->
@@ -101,12 +101,15 @@ img{max-width:100%}
 .card:hover .thumb .glyph{transform:scale(1.08)}
 .thumb .kicker{position:absolute;left:15px;bottom:13px;z-index:3;color:rgba(255,255,255,.96);
   font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;text-shadow:0 1px 6px rgba(0,0,0,.4)}
-.badge{position:absolute;top:13px;left:15px;z-index:3;background:var(--surface);color:var(--accent);
+.badge{position:absolute;top:13px;left:15px;z-index:3;background:var(--ink);color:var(--surface);
   font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:6px 10px;
-  border-radius:100px;border:1px solid var(--line);font-weight:500}
+  border-radius:100px;border:1px solid var(--ink);font-weight:500}
 .card-body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
 .card-body h3{font-family:var(--display);font-weight:500;font-size:21px;line-height:1.12}
+.card-body .sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+  margin-top:8px;font-weight:500}
 .card-body p{color:var(--muted);font-size:13px;margin-top:8px;flex:1;line-height:1.55}
+.unit{font-family:var(--body);font-size:12.5px;font-weight:300;color:var(--muted);margin-left:4px;white-space:nowrap}
 .price-row{display:flex;align-items:flex-end;justify-content:space-between;
   margin-top:18px;padding-top:16px;border-top:1px solid var(--line);gap:10px}
 .price{font-family:var(--display);font-size:25px;font-weight:600;line-height:1}
@@ -130,6 +133,7 @@ img{max-width:100%}
 .stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:100px;background:var(--surface)}
 .stepper button{width:40px;height:44px;border:none;background:none;cursor:pointer;font-size:17px;color:var(--ink);line-height:1}
 .stepper button:hover{color:var(--accent)}
+.stepper button:disabled{color:var(--line);cursor:default}
 .stepper .qty{min-width:26px;text-align:center;font-size:14px;font-weight:400}
 
 /* ----------------------- product detail --------------------- */
@@ -138,8 +142,12 @@ img{max-width:100%}
 .pdp-media .thumb .glyph svg{width:66px;height:66px}
 .pdp-info .eyebrow{margin-bottom:12px}
 .pdp-info h1{font-family:var(--display);font-weight:500;font-size:clamp(30px,4.4vw,46px);line-height:1.03}
+.pdp-sub{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-top:12px;font-weight:500}
 .pdp-price{display:flex;align-items:baseline;gap:14px;margin:18px 0 22px;flex-wrap:wrap}
 .pdp-price .now{font-family:var(--display);font-size:34px;font-weight:600}
+.pdp-price .unit{font-size:15px}
+.min-note{color:var(--ink-soft);font-size:14px;margin-top:14px}
+.min-note strong{font-weight:500;color:var(--ink)}
 .pdp-price s{color:var(--muted);font-size:18px;text-decoration-thickness:1px}
 .pdp-price .save{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
   border:1px solid var(--line);padding:5px 11px;border-radius:100px;align-self:center}
@@ -242,66 +250,123 @@ img{max-width:100%}
 
 <script>
 /* ============================================================
-   PRODUCT DATA — mirrors the config file the live widget reads.
-   `--t1/--t2` are placeholder image tints (swap for real photos
-   via an `image` field later). Copy is intentionally plain; the
-   clinic should review the medical wording.
+   PRODUCT DATA — Black Friday offers.
+   Prices here are for DISPLAY only; the server charges from
+   /catalog.js, so keep the two in sync (ids, prices, minQty).
+
+   sub     — short line under the name (package size, area, etc.)
+   unit    — set for offers priced per item ("$359 / syringe")
+   minQty  — minimum quantity for "2+" offers (server enforces too)
+   image   — real photo; without one the card shows the tinted
+             placeholder tile (t1/t2 gradient + glyph)
+   Copy is intentionally plain; the clinic should review the
+   medical wording.
    ============================================================ */
+const sixSessions = ["Why six sessions?","Hair grows in cycles, and the laser only catches the hairs that are actively growing at the time. Spacing out a series of sessions lets us reach more of them, and six is where most people start."];
+
 const products = [
   {
-    id:"co2-eye", name:"CO₂ Eye Rejuvenation", kicker:"Laser · Skin", glyph:"eye",
-    price:299, was:899, badge:"Save 67%", image:"images/co2-eye.png", t1:"#a9b3bd", t2:"#6d7681",
-    blurb:"Laser resurfacing for the skin around the eyes. Softens fine lines and helps with texture and dark circles.",
-    overview:"The skin around the eyes is thin, so it tends to show age before the rest of the face. A fractional CO₂ laser resurfaces that area to soften fine lines and improve crepey texture. We numb the skin first, and you'll have a few days of redness and light flaking while it heals.",
-    facts:[["Area","Around the eyes"],["Appointment","About 45 min"],["Downtime","3–5 days"],["Results","Build over 2–4 weeks"]],
-    note:"Not suitable during pregnancy or with an active skin infection in the area. We go over your history at the visit.",
+    id:"laser-full-body", name:"Full Body Laser Hair Removal", kicker:"Laser Hair Removal", sub:"6 sessions · Head to toe", glyph:"rays",
+    price:1399, was:2299, badge:"40% off", image:"images/laser-hair-full.png", t1:"#b4acba", t2:"#776e80",
+    blurb:"Six full-body laser sessions, head to toe, for less hair and a lot less shaving.",
+    overview:"Six laser hair removal sessions covering the full body, head to toe. The laser targets pigment in the hair follicle to slow regrowth. Because hair grows in cycles, a series of sessions gets you much further than a single visit, so this package covers the whole run.",
+    facts:[["Package","6 sessions"],["Area","Head to toe"],["Appointment","60–90 min"],["Downtime","None"]],
+    note:"Stay out of the sun and skip waxing or plucking before your sessions. Shaving is fine.",
     faqs:[
-      ["Does it hurt?","We numb the area first, so most people feel heat and a bit of prickling rather than real pain."],
-      ["How long until I look normal again?","Plan for about 3 to 5 days of redness and light flaking. A lot of people just take a long weekend."],
-      ["How many treatments do I need?","You'll notice a change after one. Some people book a short series if they want to soften more texture."],
-      ["When can I wear makeup again?","Once the skin has closed back up, usually after the flaking settles. We'll tell you when you're good to go."]
-    ]
-  },
-  {
-    id:"lip-filler", name:"Lip Filler", kicker:"Injectables", glyph:"drop",
-    price:399, was:599, badge:"Save 33%", image:"images/lip-filler.png", t1:"#c99aa0", t2:"#8f5f66",
-    blurb:"One syringe of hyaluronic acid filler to add volume and shape to your lips.",
-    overview:"One syringe of hyaluronic acid filler, placed to add volume or reshape the lips. We can keep it natural or go fuller depending on what you're after. You'll see a difference right away, with some swelling that settles over the next few days.",
-    facts:[["Product","HA filler · 1 syringe"],["Appointment","About 30 min"],["Downtime","Minor swelling"],["Results","6–12 months"]],
-    note:"Numbing is included. Skip alcohol and blood thinners for a couple of days beforehand to reduce bruising.",
-    faqs:[
-      ["Will my lips look overdone?","Only if that's what you want. We can keep it subtle. Tell us the look you're going for and we'll match it."],
-      ["Does it hurt?","There's numbing in the filler and we can add more, so it stays pretty comfortable. Most people say it feels like pinching."],
-      ["How long does it last?","Usually 6 to 12 months. It fades slowly, so you decide when you want a top up."],
-      ["How much swelling should I expect?","Some swelling the first day or two is normal, especially in the morning. It settles on its own."]
-    ]
-  },
-  {
-    id:"laser-hair-full", name:"Full Body Laser Hair Removal", kicker:"Laser", glyph:"rays",
-    price:249, was:379, badge:"Save 34%", image:"images/laser-hair-full.png", t1:"#b4acba", t2:"#776e80",
-    blurb:"A full-body laser session to reduce hair growth from head to toe.",
-    overview:"A full-body laser session covering the areas you choose. The laser targets pigment in the hair follicle to slow regrowth. Since hair grows in cycles, most people book a series of sessions to get the fullest result.",
-    facts:[["Area","Full body"],["Appointment","60–90 min"],["Downtime","None"],["Best result","Over a series"]],
-    note:"Stay out of the sun and skip waxing or plucking before your session. Shaving is fine.",
-    faqs:[
-      ["How many sessions will I need?","Most people need several. Hair grows in cycles and the laser only catches what's actively growing, so we space the sessions out. We'll give you a realistic number at your visit."],
+      sixSessions,
       ["Is it permanent?","It's more of a big reduction than a total wipeout. Most people keep the results with the odd touch up down the line."],
       ["Does it work with my hair color?","It works best on hair that still has pigment. Very light or gray hair doesn't respond as well. We can check for you before we start."],
       ["How should I prep?","Shave the areas the day before and stay out of the sun. Don't wax or pluck first, since the laser needs the root to target."]
     ]
   },
   {
-    id:"prf-ezgel", name:"PRF EZ-Gel", kicker:"Regenerative", glyph:"leaf",
-    price:549, was:749, badge:"Save 27%", image:"images/prf-ezgel.png", t1:"#a7b39a", t2:"#6e7563",
-    blurb:"A natural filler made from your own blood. Adds volume and supports collagen over time.",
-    overview:"We take a small blood draw, spin it down, and turn it into a gel. Because it's made from your own blood, there's nothing synthetic involved. It's used to add volume and support collagen in areas like under the eyes and the cheeks.",
-    facts:[["Source","Your own blood"],["Appointment","About 45 min"],["Downtime","Possible bruising"],["Results","Build gradually"]],
-    note:"Slight bruising at the injection sites is normal. We'll walk you through aftercare before you leave.",
+    id:"laser-brazilian", name:"Brazilian Laser Hair Removal", kicker:"Laser Hair Removal", sub:"6 sessions", glyph:"rays",
+    price:399, was:659, badge:"40% off", t1:"#c3aaa7", t2:"#86696a",
+    blurb:"Six Brazilian laser sessions to cut down regrowth and the upkeep of shaving or waxing.",
+    overview:"Six laser sessions for the Brazilian area. The laser targets pigment in the hair follicle to slow regrowth, and spacing the sessions out lets us catch hair at different stages of its growth cycle. Sessions are quick, and you can go straight back to your day afterward.",
+    facts:[["Package","6 sessions"],["Area","Brazilian"],["Appointment","About 20 min"],["Downtime","None"]],
+    note:"Shave the area the day before your session. Skip waxing or plucking, since the laser needs the root to target.",
     faqs:[
-      ["How is this different from regular filler?","It's made from your own blood instead of a synthetic product, so nothing foreign goes in."],
-      ["Does the blood draw hurt?","It's the same as a regular blood test, just a small draw from your arm."],
-      ["When will I see results?","It builds gradually as your body responds, so give it a few weeks rather than expecting an instant change."],
-      ["Will I bruise?","A little bruising at the injection spots can happen. It usually clears up within a few days."]
+      ["Does it hurt?","Most people describe it as a quick snap, like a rubber band against the skin. The bikini area is more sensitive than most, but each session is short."],
+      sixSessions,
+      ["How should I prep?","Shave the day before, and don't wax or pluck in the weeks leading up to it. Avoid tanning the area as well."]
+    ]
+  },
+  {
+    id:"laser-underarm", name:"Underarm Laser Hair Removal", kicker:"Laser Hair Removal", sub:"6 sessions", glyph:"rays",
+    price:299, was:499, badge:"40% off", t1:"#a9b3bd", t2:"#6d7681",
+    blurb:"Six quick underarm laser sessions so you can stop shaving every other day.",
+    overview:"Six laser sessions for both underarms. The laser targets pigment in the hair follicle to slow regrowth. Underarm sessions only take a few minutes, so they're easy to fit into a lunch break.",
+    facts:[["Package","6 sessions"],["Area","Both underarms"],["Appointment","About 15 min"],["Downtime","None"]],
+    note:"Shave the day before, and skip deodorant on the day of your session.",
+    faqs:[
+      ["Does it hurt?","It feels like a quick snap against the skin. Underarm sessions are over in a few minutes."],
+      sixSessions,
+      ["Can I work out afterward?","Give it a day before anything that makes you sweat a lot, since the skin can be a little sensitive right after."]
+    ]
+  },
+  {
+    id:"rf-microneedling", name:"RF Microneedling", kicker:"Skin", sub:"3 sessions", glyph:"grid",
+    price:999, was:1649, badge:"40% off", t1:"#b9a99b", t2:"#7b6c60",
+    blurb:"Three sessions of microneedling with radiofrequency to improve texture, acne scars and fine lines.",
+    overview:"Fine needles create tiny channels in the skin while radiofrequency energy heats the deeper layers. Together they push the skin to build new collagen, which helps with texture, acne scarring, enlarged pores and mild laxity. We numb the skin first. Collagen builds over time, which is why it's done as a series.",
+    facts:[["Package","3 sessions"],["Appointment","About 60 min"],["Downtime","1–3 days of redness"],["Results","Build over a few months"]],
+    note:"Not suitable during pregnancy or with an active skin infection or breakout in the area. We go over your history at the visit.",
+    faqs:[
+      ["Does it hurt?","We numb the skin first, so most people feel warmth and pressure rather than real pain."],
+      ["Why three sessions?","Each session kicks off new collagen, and the results build on each other. We usually space them about four to six weeks apart."],
+      ["How will my skin look afterward?","Expect redness, a bit like a mild sunburn, and maybe some swelling for a day or two. Most people are back to normal within a few days."]
+    ]
+  },
+  {
+    id:"coolpeel", name:"Helix CO₂ CoolPeel Fusion", kicker:"Laser · Skin", sub:"Full face", glyph:"spark",
+    price:499, was:799, badge:"40% off", image:"images/co2-eye.png", t1:"#a9b3bd", t2:"#6d7681",
+    blurb:"A full-face CO₂ laser treatment for brighter, smoother skin without the long recovery.",
+    overview:"CoolPeel uses a CO₂ laser at a lighter setting that works near the surface of the skin. It's aimed at dullness, uneven tone, fine lines and rough texture across the whole face, without the week or more of recovery that a deeper CO₂ treatment needs. Expect some redness and a dry, sandpapery feel for a few days as the skin turns over.",
+    facts:[["Area","Full face"],["Appointment","About 45 min"],["Downtime","1–3 days"],["Results","Show as the skin heals"]],
+    note:"Not suitable during pregnancy or with an active skin infection in the area. We go over your history at the visit.",
+    faqs:[
+      ["How is this different from a regular CO₂ laser?","A traditional CO₂ laser goes deeper and usually means a week or more of recovery. CoolPeel works closer to the surface, so the downtime is much shorter while still improving tone and texture."],
+      ["Does it hurt?","We numb the skin first, so most people feel heat and a bit of prickling rather than real pain."],
+      ["When can I wear makeup again?","Usually after a day or two, once the skin has settled. We'll tell you when you're good to go."]
+    ]
+  },
+  {
+    id:"juvederm-ultra", name:"Juvéderm Ultra Filler", kicker:"Injectables", sub:"Per syringe · 2 minimum", glyph:"drop",
+    price:359, was:599, unit:"syringe", minQty:2, badge:"40% off", image:"images/lip-filler.png", t1:"#c99aa0", t2:"#8f5f66",
+    blurb:"Hyaluronic acid filler for fuller lips and softer lines around the mouth. Priced per syringe when you get 2 or more.",
+    overview:"Juvéderm Ultra is a hyaluronic acid filler often used to add volume to the lips and soften the lines around the mouth. This offer is priced per syringe with a two-syringe minimum, and we'll plan where they'll make the most difference at your visit. You'll see a change right away, with some swelling that settles over the next few days.",
+    facts:[["Product","Juvéderm Ultra"],["Minimum","2 syringes"],["Downtime","Minor swelling"],["Results","6–12 months"]],
+    note:"Skip alcohol and blood thinners for a couple of days beforehand to reduce bruising.",
+    faqs:[
+      ["Why is there a two-syringe minimum?","The Black Friday price applies when you get 2 or more syringes. We'll plan how to use them with you at your visit."],
+      ["Will it look overdone?","Only if that's what you want. We can keep it subtle. Tell us the look you're going for and we'll match it."],
+      ["Does it hurt?","We numb the area so it stays pretty comfortable. Most people say it feels like pinching."],
+      ["How long does it last?","Usually 6 to 12 months. It fades slowly, so you decide when you want a top up."]
+    ]
+  },
+  {
+    id:"signature-facial", name:"Signature Facial", kicker:"Facials", sub:"Per facial · 2 minimum", glyph:"leaf",
+    price:99, was:139, unit:"facial", minQty:2, badge:"30% off", t1:"#c6b6a5", t2:"#8c7a68",
+    blurb:"Our signature facial for a deep clean and a fresh, hydrated finish. Priced per facial when you get 2 or more.",
+    overview:"Our signature facial is a deep clean and refresh for your skin, finished with hydration so you walk out glowing. It's a good fit for regular upkeep between other treatments. This offer is priced per facial with a two-facial minimum.",
+    facts:[["Price","Per facial"],["Minimum","2 facials"],["Downtime","None"],["Good for","Regular upkeep"]],
+    note:"Let us know about any skin sensitivities, allergies or recent treatments when you book.",
+    faqs:[
+      ["What's the difference between the Signature and Custom facial?","The Signature Facial follows our set routine. The Custom Facial is built around your skin on the day, with the steps and products chosen for what it needs."],
+      ["Is there any downtime?","No. You can head straight back to your day."]
+    ]
+  },
+  {
+    id:"custom-facial", name:"Custom Facial", kicker:"Facials", sub:"Per facial · 2 minimum", glyph:"spark",
+    price:149, was:249, unit:"facial", minQty:2, badge:"40% off", t1:"#b3a6b4", t2:"#776a7a",
+    blurb:"A facial built around your skin and what's bothering it. Priced per facial when you get 2 or more.",
+    overview:"We start by looking at your skin and talking through what's bothering you, then build the facial around that, whether it's congestion, dullness, dryness or sensitivity. This offer is priced per facial with a two-facial minimum.",
+    facts:[["Price","Per facial"],["Minimum","2 facials"],["Downtime","None"],["Good for","Specific concerns"]],
+    note:"Let us know about any skin sensitivities, allergies or recent treatments when you book.",
+    faqs:[
+      ["What's the difference between the Signature and Custom facial?","The Signature Facial follows our set routine. The Custom Facial is built around your skin on the day, with the steps and products chosen for what it needs."],
+      ["Is there any downtime?","No. You can head straight back to your day."]
     ]
   },
 ];
@@ -311,20 +376,36 @@ const glyphs = {
   leaf:'<path d="M5 19 C5 10 12 5 19 5 C19 14 12 19 5 19 Z M9 15 C11 12 14 10 17 9" />',
   eye:'<path d="M2 12 C5 6.5 8.5 5 12 5 C15.5 5 19 6.5 22 12 C19 17.5 15.5 19 12 19 C8.5 19 5 17.5 2 12 Z" /><circle cx="12" cy="12" r="3.1" />',
   rays:'<circle cx="12" cy="12" r="3" /><path d="M12 2v3 M12 19v3 M2 12h3 M19 12h3 M5.2 5.2l2 2 M16.8 16.8l2 2 M18.8 5.2l-2 2 M7.2 16.8l-2 2" />',
+  spark:'<path d="M12 3 C12.8 8.5 15.5 11.2 21 12 C15.5 12.8 12.8 15.5 12 21 C11.2 15.5 8.5 12.8 3 12 C8.5 11.2 11.2 8.5 12 3 Z" /><path d="M19 3v3 M17.5 4.5h3" />',
+  grid:'<circle cx="7" cy="7" r=".9" /><circle cx="12" cy="7" r=".9" /><circle cx="17" cy="7" r=".9" /><circle cx="7" cy="12" r=".9" /><circle cx="12" cy="12" r=".9" /><circle cx="17" cy="12" r=".9" /><circle cx="7" cy="17" r=".9" /><circle cx="12" cy="17" r=".9" /><circle cx="17" cy="17" r=".9" /><rect x="3" y="3" width="18" height="18" rx="3" />',
 };
 const PHONE = "917-905-9165";
 const money = n => "$" + n.toLocaleString("en-US");
 const findP = id => products.find(p => p.id === id);
 const svg = (g, size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
   stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">${glyphs[g]||glyphs.drop}</svg>`;
-const media = (p, size) => p.image
-  ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.remove()">`
-  : `<div class="glyph">${svg(p.glyph,size)}</div>`;
+// glyph always sits underneath, so a missing photo falls back to the placeholder tile
+const media = (p, size) => `<div class="glyph">${svg(p.glyph,size)}</div>` + (p.image
+  ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.remove()">` : "");
 const thumb = (p, size) => `<div class="thumb" style="--t1:${p.t1};--t2:${p.t2}">${media(p,size)}</div>`;
+const minQ = p => p.minQty || 1;
+const unitTag = p => p.unit ? `<span class="unit">/ ${p.unit}</span>` : "";
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 /* ------------------------- cart state ----------------------- */
 let cart = load();
-function load(){ try{ return JSON.parse(localStorage.getItem("mm_cart")) || {}; }catch(_){ return {}; } }
+// Drop items that are no longer offered (e.g. left over from a past promo)
+// and bump anything under its minimum.
+function load(){
+  let raw = {};
+  try{ raw = JSON.parse(localStorage.getItem("mm_cart")) || {}; }catch(_){}
+  const clean = {};
+  for(const [id, qty] of Object.entries(raw)){
+    const p = findP(id), n = parseInt(qty, 10);
+    if(p && n > 0) clean[id] = Math.max(minQ(p), n);
+  }
+  return clean;
+}
 function save(){ try{ localStorage.setItem("mm_cart", JSON.stringify(cart)); }catch(_){} }
 const cartCount = () => Object.values(cart).reduce((a,b)=>a+b,0);
 const cartItems = () => Object.entries(cart).map(([id,qty])=>({p:findP(id),qty})).filter(x=>x.p);
@@ -342,10 +423,11 @@ function renderShop(){
   tbLeft().innerHTML = "";
   app().innerHTML = `
     <header class="shop-head reveal">
-      <div class="eyebrow">Grand Opening · Now Open in Midtown Manhattan</div>
-      <h1>Grand Opening Offers</h1>
-      <p class="lede">Pay online to claim your offer, then call <a href="tel:1${PHONE.replace(/-/g,'')}">${PHONE}</a>
-        to book your visit. These prices are only good while our first appointments last.</p>
+      <div class="eyebrow">Black Friday · Limited Time</div>
+      <h1>Black Friday Offers</h1>
+      <p class="lede">Up to 40% off laser hair removal, skin treatments, filler and facials.
+        Pay online to lock in your price, then call <a href="tel:1${PHONE.replace(/-/g,'')}">${PHONE}</a>
+        to book your visit. These prices are only here for a limited time.</p>
     </header>
     <div class="shop-bar reveal" style="animation-delay:.06s"><span class="count">${products.length} offers</span></div>
     <section class="grid">
@@ -358,10 +440,11 @@ function renderShop(){
           </div>
           <div class="card-body">
             <h3>${p.name}</h3>
+            ${p.sub?`<div class="sub">${p.sub}</div>`:""}
             <p>${p.blurb}</p>
             <div class="price-row">
-              <div class="price">${p.was?`<s>${money(p.was)}</s>`:""}${money(p.price)}</div>
-              <button class="buy" data-add="${p.id}"><span>Add</span></button>
+              <div class="price">${p.was?`<s>${money(p.was)}</s>`:""}${money(p.price)}${unitTag(p)}</div>
+              <button class="buy" data-add="${p.id}"><span>${minQ(p) > 1 ? `Add ${minQ(p)}` : "Add"}</span></button>
             </div>
           </div>
         </a>`).join("")}
@@ -378,14 +461,17 @@ function renderProduct(id){
       <div class="pdp-info">
         <div class="eyebrow">${p.kicker}</div>
         <h1>${p.name}</h1>
+        ${p.sub?`<div class="pdp-sub">${p.sub}</div>`:""}
         <div class="pdp-price">
           ${p.was?`<s>${money(p.was)}</s>`:""}
-          <span class="now">${money(p.price)}</span>
+          <span class="now">${money(p.price)}${unitTag(p)}</span>
           <span class="save">${p.badge}</span>
         </div>
         <p class="pdp-lede">${p.blurb}</p>
+        ${minQ(p) > 1 ? `<p class="min-note">Minimum ${plural(minQ(p), p.unit)} ·
+          Total <strong class="pdp-total" data-price="${p.price}">${money(p.price*minQ(p))}</strong></p>` : ""}
         <div class="buy-block">
-          <div class="stepper"><button data-step="-1">−</button><span class="qty">1</span><button data-step="1">+</button></div>
+          <div class="stepper" data-min="${minQ(p)}"><button data-step="-1" disabled>−</button><span class="qty">${minQ(p)}</span><button data-step="1">+</button></div>
           <button class="btn primary" data-add="${p.id}">Add to cart</button>
           <button class="btn ghost" data-buy="${p.id}">Buy now</button>
         </div>
@@ -420,9 +506,10 @@ function renderCart(){
       ${items.map(({p,qty})=>`
         <div class="cart-row">
           <a class="cart-thumb thumb" href="#/product/${p.id}" style="--t1:${p.t1};--t2:${p.t2}">${media(p,26)}</a>
-          <div class="cart-meta"><a href="#/product/${p.id}"><h4>${p.name}</h4></a><span class="cat">${p.kicker}</span></div>
+          <div class="cart-meta"><a href="#/product/${p.id}"><h4>${p.name}</h4></a>
+            <span class="cat">${p.unit ? `${money(p.price)} per ${p.unit} · ${minQ(p)} minimum` : (p.sub || p.kicker)}</span></div>
           <div class="cart-ctrls">
-            <div class="stepper" data-id="${p.id}"><button data-step="-1">−</button><span class="qty">${qty}</span><button data-step="1">+</button></div>
+            <div class="stepper" data-id="${p.id}" data-min="${minQ(p)}"><button data-step="-1"${qty <= minQ(p) ? " disabled" : ""}>−</button><span class="qty">${qty}</span><button data-step="1">+</button></div>
             <div class="line-price">${money(p.price*qty)}</div>
             <button class="remove" data-remove="${p.id}">Remove</button>
           </div>
@@ -480,9 +567,11 @@ window.addEventListener("load", postHeight);
 if(window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
 
 /* ------------------------ interactions ---------------------- */
-function qtyNear(btn){
+// qty from the product-page stepper, or the item's minimum when added from a card
+function qtyNear(btn, id){
+  const min = minQ(findP(id) || {});
   const s = btn.closest(".buy-block")?.querySelector(".qty");
-  return s ? Math.max(1, parseInt(s.textContent)||1) : 1;
+  return s ? Math.max(min, parseInt(s.textContent)||min) : min;
 }
 function flash(btn){
   const t = btn.querySelector("span") || btn;
@@ -503,17 +592,21 @@ document.addEventListener("click", async (e)=>{
     e.preventDefault();
     const st = step.closest(".stepper");
     const qEl = st.querySelector(".qty");
-    let q = (parseInt(qEl.textContent)||1) + parseInt(step.dataset.step);
+    const min = parseInt(st.dataset.min) || 1;   // can't go below the offer's minimum; use Remove instead
+    const q = Math.max(min, (parseInt(qEl.textContent)||min) + parseInt(step.dataset.step));
     if(st.dataset.id){                       // cart stepper — mutate + re-render
-      if(q <= 0) delete cart[st.dataset.id]; else cart[st.dataset.id] = q;
+      cart[st.dataset.id] = q;
       save(); renderCart(); updateCount();
     } else {                                 // pdp stepper — local only
-      qEl.textContent = Math.max(1, q);
+      qEl.textContent = q;
+      st.querySelector('[data-step="-1"]').disabled = q <= min;
+      const total = document.querySelector(".pdp-total");
+      if(total) total.textContent = money(parseInt(total.dataset.price) * q);
     }
     return;
   }
-  if(add){ e.preventDefault(); addToCart(add.dataset.add, qtyNear(add)); flash(add); return; }
-  if(buy){ e.preventDefault(); addToCart(buy.dataset.buy, qtyNear(buy)); location.hash = "#/cart"; return; }
+  if(add){ e.preventDefault(); addToCart(add.dataset.add, qtyNear(add, add.dataset.add)); flash(add); return; }
+  if(buy){ e.preventDefault(); addToCart(buy.dataset.buy, qtyNear(buy, buy.dataset.buy)); location.hash = "#/cart"; return; }
   if(rm){ e.preventDefault(); delete cart[rm.dataset.remove]; save(); renderCart(); updateCount(); return; }
   if(co){
     e.preventDefault();

@@ -5,11 +5,20 @@
    ALWAYS looks up the real price here, so a user can't tamper with
    prices in the page. Amounts are in CENTS.
 
-   Keep in sync with the `products` array in shop.html (dollars there).
+   minQty  — offers priced "per unit, 2 or more" (filler, facials).
+             The server rejects a checkout below this quantity.
+   image   — path under /public sent to Stripe Checkout (optional).
+
+   Keep in sync with the `products` array in public/shop.html
+   (dollars there).
    ============================================================ */
 module.exports = {
-  "co2-eye":         { name: "CO₂ Eye Rejuvenation",        amount: 29900 },
-  "lip-filler":      { name: "Lip Filler",                  amount: 39900 },
-  "laser-hair-full": { name: "Full Body Laser Hair Removal", amount: 24900 },
-  "prf-ezgel":       { name: "PRF EZ-Gel",                  amount: 54900 },
+  "laser-full-body":  { name: "Full Body Laser Hair Removal — 6 Sessions", amount: 139900, image: "images/laser-hair-full.png" },
+  "laser-brazilian":  { name: "Brazilian Laser Hair Removal — 6 Sessions", amount:  39900 },
+  "laser-underarm":   { name: "Underarm Laser Hair Removal — 6 Sessions",  amount:  29900 },
+  "rf-microneedling": { name: "RF Microneedling — 3 Sessions",             amount:  99900 },
+  "coolpeel":         { name: "Helix CO₂ CoolPeel Fusion — Full Face",     amount:  49900, image: "images/co2-eye.png" },
+  "juvederm-ultra":   { name: "Juvéderm Ultra Filler (per syringe)",       amount:  35900, minQty: 2, image: "images/lip-filler.png" },
+  "signature-facial": { name: "Signature Facial (per facial)",             amount:   9900, minQty: 2 },
+  "custom-facial":    { name: "Custom Facial (per facial)",                amount:  14900, minQty: 2 },
 };

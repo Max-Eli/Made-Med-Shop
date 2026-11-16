@@ -1,20 +1,31 @@
 MADE MEDICAL — PRODUCT IMAGES
 =============================
 
-Save the four photos into THIS folder using these exact filenames
-(the shop looks for them by name):
+Photos currently in use (Black Friday offers):
 
-  lip-filler.jpg        →  the lips + syringe photo
-  co2-eye.jpg           →  the dewy close-up (eyes / glowing skin)
-  prf-ezgel.jpg         →  the man getting the forehead injection
-  laser-hair-full.jpg   →  the smooth foot / leg photo
+  laser-hair-full.png  →  Full Body Laser Hair Removal (6 sessions)
+  co2-eye.png          →  Helix CO₂ CoolPeel Fusion (full face)
+  lip-filler.png       →  Juvéderm Ultra Filler
 
-Notes
------
-- .jpg is expected. If you save as .png, either rename to .jpg or tell
-  me and I'll switch the extensions in shop.html.
-- Any reasonable size works; roughly square (e.g. 1000x1000 or larger)
-  looks best since the cards crop to 4:3 and the product page to 1:1.
-- If a file is missing, that product simply falls back to the colored
-  placeholder tile — nothing breaks.
-- To swap a photo later, just replace the file (keep the same name).
+  prf-ezgel.png        →  not used right now (left over from the grand
+                          opening shop; safe to keep for later)
+
+These offers have NO photo yet and show the tinted placeholder tile:
+
+  Brazilian Laser Hair Removal   (id: laser-brazilian)
+  Underarm Laser Hair Removal    (id: laser-underarm)
+  RF Microneedling               (id: rf-microneedling)
+  Signature Facial               (id: signature-facial)
+  Custom Facial                  (id: custom-facial)
+
+Adding a photo
+--------------
+1. Save it into THIS folder, e.g.  rf-microneedling.png
+   (roughly square, 1000x1000 or larger — cards crop to 1:1).
+2. In public/shop.html, add  image:"images/rf-microneedling.png"
+   to that product.
+3. In catalog.js, add the same  image: "images/rf-microneedling.png"
+   so the photo also shows on the Stripe checkout page.
+
+If a file is missing or fails to load, the card falls back to the
+placeholder tile — nothing breaks.

@@ -40,10 +40,12 @@ module.exports = async (req, res) => {
       const product = CATALOG[id];
       if (!product) throw new Error("Unknown item: " + id);
       const quantity = Math.max(1, Math.min(20, parseInt(qty, 10) || 1));
+      const minQty = product.minQty || 1;
+      if (quantity < minQty) throw new Error(`${product.name} requires a minimum of ${minQty}.`);
 
       const product_data = { name: product.name };
       // Stripe can only fetch publicly reachable images (skip on localhost).
-      if (!isLocal) product_data.images = [`${origin}/images/${id}.png`];
+      if (!isLocal && product.image) product_data.images = [`${origin}/${product.image}`];
 
       return {
         quantity,
